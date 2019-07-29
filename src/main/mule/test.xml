@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="test_listener_config" doc:name="HTTP Listener config" doc:id="48ad667a-f564-4d75-b6a6-a84616d4aa1f" basePath="/test" >
+		<http:listener-connection host="0.0.0.0" port="9090" />
+	</http:listener-config>
+	<http:request-config name="test_request_config" doc:name="HTTP Request configuration" doc:id="9d0e067a-a553-4441-b069-4603f2e5653e" basePath="/api">
+		<http:request-connection host="0.0.0.0" port="8081" />
+	</http:request-config>
+	<flow name="testGetAllAccounts" doc:id="e8938a02-4811-4caf-a475-add3bf52567c" >
+		<http:listener doc:name="Listener" doc:id="1fe0b310-5568-46e2-8e18-9e09af36c30e" config-ref="test_listener_config" path="/accounts"/>
+		<http:request method="GET" doc:name="Request" doc:id="3b911a68-4b43-4a6b-945e-01d204890c8e" config-ref="test_request_config" path="/accounts"/>
+	</flow>
+	<flow name="testGetAccount" doc:id="1e35b7e1-6e66-410e-b7a7-0af0bbd8efda" >
+		<http:listener doc:name="Listener" doc:id="971fa22c-ea8e-4c25-85a8-0d86e23a7611" config-ref="test_listener_config" path="/accounts/{id}"/>
+		<http:request method="GET" doc:name="Request" doc:id="6dd3b1dc-c175-44c7-910e-e16d1d9a6df2" config-ref="test_request_config" path="/accounts/{id}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	id : 
+  attributes.uriParams.id
+
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+</mule>
